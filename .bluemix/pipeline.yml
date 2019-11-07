@@ -4,19 +4,19 @@ properties:
   value: "{{toolchain.name}}"
   type: text
 - name: VPC_IMAGE_NAME
-  value: "\${PREFIX}-\${DATE}"
+  value: "\\${PREFIX}-\\${DATE}"
   type: text
 - name: COS_SERVICE_NAME
-  value: "\${PREFIX}-cos"
+  value: "\\${PREFIX}-cos"
   type: text
 - name: COS_SERVICE_PLAN
   value: "standard"
   type: text
 - name: COS_REGION
-  value: "\$REGION"
+  value: "\\$REGION"
   type: text
 - name: COS_BUCKET_NAME
-  value: "\${PREFIX}-images"
+  value: "\\${PREFIX}-images"
   type: text
 - name: DATACENTER
   value: "${DATACENTER}"
