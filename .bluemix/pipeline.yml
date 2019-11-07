@@ -47,93 +47,83 @@ stages:
   - type: git
     events: '{"push":true,"pull_request":false,"pull_request_closed":false}'
   jobs:
-  - name: 012build
+  - name: 'Initialize and Create Initial VSI'
     type: builder
-    artifact_dir: out
-    build_type: customimage
+    build_type: shell
     script: |+
       #!/bin/bash
       bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         000-prereqs.sh \
         010-prepare-cos.sh \
         020-create-classic-vm.sh
-    docker_image: l2fprod/bxshell:latest
 
 - name: 'Capture Initial VSI VHD to COS bucket'
   inputs:
   - type: job
     stage: 'Initialize and Create Initial VSI'
-    job: 012build
+    job: 'Initialize and Create Initial VSI'
     dir_name: null
   triggers:
   - type: stage
   jobs:
-  - name: 3build
+  - name: 'Capture initial VSI VHD to COS bucket'
     type: builder
-    artifact_dir: out
-    build_type: customimage
+    build_type: shell
     script: |+
       #!/bin/bash
       bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         030-capture-classic-to-cos.sh
-    docker_image: l2fprod/bxshell:latest
 
 - name: 'Import VHD into VPC Image'
   inputs:
   - type: job
     stage: 'Capture Initial VSI VHD to COS bucket'
-    job: 3build
+    job: 'Capture initial VSI VHD to COS bucket'
     dir_name: null
   triggers:
   - type: stage
   jobs:
-  - name: 4build
+  - name: 'Import VHD into VPC Image'
     type: builder
-    artifact_dir: out
-    build_type: customimage
+    build_type: shell
     script: |+
       #!/bin/bash
       bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         040-import-image-to-vpc.sh 
-    docker_image: l2fprod/bxshell:latest
 
 - name: 'Test VPC custom image'
   inputs:
   - type: job
     stage: 'Import VHD into VPC Image'
-    job: 4build
+    job: 'Import VHD into VPC Image'
     dir_name: null
   triggers:
   - type: stage
   jobs:
-  - name: 5build
+  - name: 'Test VPC custom image'
     type: builder
-    artifact_dir: out
-    build_type: customimage
+    build_type: shell
     script: |+
       #!/bin/bash
       bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         050-provision-vpc-vsi.sh
-    docker_image: l2fprod/bxshell:latest
 
-- name: '6_Clean_up_everything_except:_Image_COS_and bucket'
+- name: 'Clean up everything except COS instance and bucket'
   inputs:
   - type: job
     stage: 'Test VPC custom image'
-    job: 5build
+    job: 'Test VPC custom image'
     dir_name: null
   triggers:
   - type: stage
   jobs:
-  - name: 6build
+  - name: 'Clean up'
     type: builder
-    artifact_dir: out
-    build_type: customimage
+    build_type: shell
     script: |+
       #!/bin/bash
       bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         060-cleanup.sh
-    docker_image: l2fprod/bxshell:latest
 #hooks:
 #- enabled: true
 #  label: null
