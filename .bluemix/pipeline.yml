@@ -13,7 +13,7 @@ properties:
   value: "standard"
   type: text
 - name: COS_REGION
-  value: "${REGION}"
+  value: "$REGION"
   type: text
 - name: COS_BUCKET_NAME
   value: "${PREFIX}-images"
