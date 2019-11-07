@@ -6,7 +6,11 @@
   "properties": {
     "api-key": {
       "description": "IBM Cloud API keys reference permissions that grant access to cloud resources. You can obtain your API key with 'ibmcloud iam api-key-create' or via the console at https://cloud.ibm.com/iam/apikeys by clicking **Create an IBM Cloud API key**.",
-      "type": "string"
+      "type": "string",
+      "pattern": "\\S",
+      "validator": {
+        "v-type": "api-key"
+    }
     },
     "softlayer-username": {
       "description": "Classic infrastructure API user name.  Located via the console at https://cloud.ibm.com/iam/apikeys.  Locate the **Classic infrastructure API key** and click **Details** in the  ... drop down.",
@@ -22,18 +26,26 @@
     },
     "target-region": {
       "description": "Region",
-      "type": "string"
-    },
+      "type": "string",
+      "validator": {
+        "v-type": "k8s-region",
+        "params": ["api-key"]
+    }
+},
     "target-resource-group": {
       "description": "Resource group name",
-      "type": "string"
+      "type": "string",
+      "validator": {
+        "v-type": "resource-group",
+        "params": ["api-key"]
     }
+}
   },
   "required": ["api-key", "softlayer-username", "softlayerapikey", "datacenter", "target-region", "target-resource-group" ],
   "form": [
     {
       "type": "validator",
-      "url": "/devops/setup/bm-helper/custom_helper.html"
+      "url": "/devops/validator/validator-v1.html"
     },
     {
       "key": "api-key",
