@@ -52,7 +52,7 @@ stages:
     build_type: shell
     script: |+
       #!/bin/bash
-      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash ./vpc-migrate-from-classic/pipeline_build.sh \
         000-prereqs.sh \
         010-prepare-cos.sh \
         020-create-classic-vm.sh
@@ -71,7 +71,7 @@ stages:
     build_type: shell
     script: |+
       #!/bin/bash
-      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash ./vpc-migrate-from-classic/pipeline_build.sh \
         030-capture-classic-to-cos.sh
 
 - name: 'Import VHD into VPC Image'
@@ -88,7 +88,7 @@ stages:
     build_type: shell
     script: |+
       #!/bin/bash
-      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash ./vpc-migrate-from-classic/pipeline_build.sh \
         040-import-image-to-vpc.sh 
 
 - name: 'Test VPC custom image'
@@ -105,7 +105,7 @@ stages:
     build_type: shell
     script: |+
       #!/bin/bash
-      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash ./vpc-migrate-from-classic/pipeline_build.sh \
         050-provision-vpc-vsi.sh
 
 - name: 'Clean up everything except COS instance and bucket'
@@ -122,11 +122,5 @@ stages:
     build_type: shell
     script: |+
       #!/bin/bash
-      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash ./vpc-migrate-from-classic/pipeline_build.sh \
         060-cleanup.sh
-#hooks:
-#- enabled: true
-#  label: null
-#  ssl_enabled: true
-#  url: https://devops-api.us-south.devops.cloud.ibm.com/v1/messaging/webhook/publish
-
