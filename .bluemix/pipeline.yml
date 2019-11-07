@@ -4,7 +4,7 @@ properties:
   value: "{{toolchain.name}}"
   type: text
 - name: VPC_IMAGE_NAME
-  value: "${PREFIX}"
+  value: "${PREFIX}-${DATE}"
   type: text
 - name: COS_SERVICE_NAME
   value: "${PREFIX}-cos"
@@ -38,7 +38,7 @@ properties:
   type: secure
 
 stages:
-- name: '012 Initialize and Create Initial VSI'
+- name: 'Initialize and Create Initial VSI'
   inputs:
   - type: git
     branch: master
@@ -49,19 +49,20 @@ stages:
   jobs:
   - name: 012build
     type: builder
+    artifact_dir: out
     build_type: customimage
     script: |+
       #!/bin/bash
-      ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         000-prereqs.sh \
         010-prepare-cos.sh \
         020-create-classic-vm.sh
     docker_image: l2fprod/bxshell:latest
 
-- name: '3 Capture Initial VSI VHD to COS bucket'
+- name: 'Capture Initial VSI VHD to COS bucket'
   inputs:
   - type: job
-    stage: '012 Initialize and Create Initial VSI'
+    stage: 'Initialize and Create Initial VSI'
     job: 012build
     dir_name: null
   triggers:
@@ -69,17 +70,18 @@ stages:
   jobs:
   - name: 3build
     type: builder
+    artifact_dir: out
     build_type: customimage
     script: |+
       #!/bin/bash
-      ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         030-capture-classic-to-cos.sh
     docker_image: l2fprod/bxshell:latest
 
-- name: '4 Import VHD into VPC Image'
+- name: 'Import VHD into VPC Image'
   inputs:
   - type: job
-    stage: '3 Capture Initial VSI VHD to COS bucket'
+    stage: 'Capture Initial VSI VHD to COS bucket'
     job: 3build
     dir_name: null
   triggers:
@@ -87,17 +89,18 @@ stages:
   jobs:
   - name: 4build
     type: builder
+    artifact_dir: out
     build_type: customimage
     script: |+
       #!/bin/bash
-      ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         040-import-image-to-vpc.sh 
     docker_image: l2fprod/bxshell:latest
 
-- name: '5_Test_VPC_Image'
+- name: 'Test VPC custom image'
   inputs:
   - type: job
-    stage: '4 Import VHD into VPC Image'
+    stage: 'Import VHD into VPC Image'
     job: 4build
     dir_name: null
   triggers:
@@ -105,17 +108,18 @@ stages:
   jobs:
   - name: 5build
     type: builder
+    artifact_dir: out
     build_type: customimage
     script: |+
       #!/bin/bash
-      ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         050-provision-vpc-vsi.sh
     docker_image: l2fprod/bxshell:latest
 
 - name: '6_Clean_up_everything_except:_Image_COS_and bucket'
   inputs:
   - type: job
-    stage: '5_Test_VPC_Image'
+    stage: 'Test VPC custom image'
     job: 5build
     dir_name: null
   triggers:
@@ -123,10 +127,11 @@ stages:
   jobs:
   - name: 6build
     type: builder
+    artifact_dir: out
     build_type: customimage
     script: |+
       #!/bin/bash
-      ./vpc-migrate-from-classic/pipeline_build.sh \
+      bash -x ./vpc-migrate-from-classic/pipeline_build.sh \
         060-cleanup.sh
     docker_image: l2fprod/bxshell:latest
 #hooks:
