@@ -124,3 +124,17 @@ stages:
       #!/bin/bash
       bash ./vpc-migrate-from-classic/pipeline_build.sh \
         060-cleanup.sh
+
+- name: Manually Cleanup COS Instance and Bucket
+  inputs:
+  - type: job
+    stage: 'Clean up everything except COS instance and bucket'
+    job: Clean up
+  jobs:
+  - name: 'Clean up'
+    type: builder
+    build_type: shell
+    script: |-
+      #!/bin/bash
+      bash ./vpc-migrate-from-classic/pipeline_build.sh \
+        final_clean_up
