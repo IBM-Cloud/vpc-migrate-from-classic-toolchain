@@ -128,8 +128,11 @@ stages:
 - name: Manually Cleanup COS Instance and Bucket
   inputs:
   - type: job
-    stage: 'Clean up everything except COS instance and bucket'
+    stage: 'Clean up COS instance and bucket'
     job: Clean up
+  triggers:
+  - type: stage
+    enabled: false
   jobs:
   - name: 'Clean up'
     type: builder
