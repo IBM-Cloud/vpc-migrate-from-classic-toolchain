@@ -38,7 +38,6 @@ services:
           SOFTLAYER_API_KEY: "{{form.pipeline.parameters.softlayerapikey}}"
           DATACENTER: "{{form.pipeline.parameters.datacenter}}"
           REGION: "{{form.pipeline.parameters.target-region}}"
-          #RESOURCE_GROUP_NAME: "{{form.pipeline.parameters.target-resource-group}}"
           RESOURCE_GROUP_NAME: "{{form.pipeline.parameters.target-resource-group}}"
         execute: true
 
@@ -52,7 +51,3 @@ form:
       #target-region: "us-south"
       target-region: "{{region}}"
       target-resource-group: "default"
-#    {
-#      "type": "validator",
-#      "url": "/devops/setup/bm-helper/custom_helper.html"
-#    },
