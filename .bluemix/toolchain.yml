@@ -34,8 +34,8 @@ services:
         env:
           REPO: repo
           API_KEY: "{{form.pipeline.parameters.api-key}}"
-          SOFTLAYER_USERNAME: "{{form.pipeline.parameters.softlayer-username}}"
-          SOFTLAYER_API_KEY: "{{form.pipeline.parameters.softlayerapikey}}"
+          IAAS_CLASSIC_USERNAME: "{{form.pipeline.parameters.softlayer-username}}"
+          IAAS_CLASSIC_API_KEY: "{{form.pipeline.parameters.softlayerapikey}}"
           DATACENTER: "{{form.pipeline.parameters.datacenter}}"
           REGION: "{{form.pipeline.parameters.target-region}}"
           RESOURCE_GROUP_NAME: "{{form.pipeline.parameters.target-resource-group}}"
